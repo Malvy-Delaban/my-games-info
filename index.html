@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>My games data</title>
+    <script type="text/javascript">
+    // Temporary token
+        var token = "USkEetnR3S4gv5m2wyDaE8V18X5dQNyGJW";
+        var serverName = "";
+        var characterName = "";
+        var characterObj = null;
+
+    // Get token tries
+    // Does not work yet
+    // For doc : https://develop.battle.net/documentation/guides/getting-started
+    // For nodeJs example : https://github.com/viglucci/vanilla-node-blizzard-oauth-example/blob/master/server.js#L29
+    // Another example : https://stackoverflow.com/questions/57752533/authorization-via-battle-net
+
+    // const tokenRequest = new XMLHttpRequest();
+        // const tokenUrl = `https://eu.battle.net/oauth/authorize`;
+        // tokenRequest.open("POST", tokenUrl);
+        // tokenRequest.setRequestHeader("Authorization", "Basic " + btoa("6477c18ddcd44578978ce02ec3331ce3:a2YeVh9rgjPpOSS6ymEHoNY8rs2o16ni"));
+        // tokenRequest.send('grant_type=client_credentials');
+        // tokenRequest.onreadystatechange = (e) => {
+        //     console.log("e : " + e);
+        //     console.log(tokenRequest.response);
+        //     document.getElementById("error").innerHTML = `${tokenRequest.response}<br>`;
+        // }
+    </script>
+</head>
+
+<body>
+    <!-- HTML -->
+    <span id="error" style="color: red;"></span>
+    Character name: <input type="text" id="fCharacter">
+    Server name: <input type="text" id="fServer">
+    <button onclick="validateWowForm()">Submit</button><br>
+    <span id="character"></span>
+    <span id="characterClass"></span>
+
+
+    <!-- JS -->
+    <script type="text/javascript">
+        function validateWowForm() {
+            characterName = document.getElementById("fCharacter").value.toLowerCase();
+            serverName = document.getElementById("fServer").value.toLowerCase();
+            if (!characterName || !serverName)
+                return;
+
+            const characterRequest = new XMLHttpRequest();
+            const characterUrl = `https://eu.api.blizzard.com/profile/wow/character/${serverName}/${characterName}?namespace=profile-eu&locale=fr_FR&access_token=${token}`;
+
+            characterRequest.open("GET", characterUrl);
+            characterRequest.send();
+            characterRequest.onreadystatechange = (e) => {
+                if (characterRequest.response) {
+                    characterObj = JSON.parse(characterRequest.response);
+                    console.log(characterObj)
+                    document.getElementById("character").innerHTML = `${characterObj.name}<br>`;
+                    document.getElementById("characterClass").innerHTML = `${characterObj.character_class.name} (${characterObj.level})`;
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>
